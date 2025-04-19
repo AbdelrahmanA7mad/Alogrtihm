@@ -1,0 +1,557 @@
+﻿@using Alogrtihm.ViewModel
+@model ProductViewModel
+@{
+    ViewData["Title"] = "Product Catalog";
+    var filterViewModel = ViewBag.FilterViewModel as FilterViewModel;
+
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Product Catalog</h1>
+
+    <div class="row">
+        <!-- Filter Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Filter Products</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" id="filterForm">
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" name="category" id="category">
+                                <option value="">All Categories</option>
+                                @{
+                                    var currentCategory = filterViewModel.CurrentCategory as string;
+                                }
+                                @foreach (var category in filterViewModel.Categories)
+                                {
+                                    <option value="@category" selected="@(category == currentCategory ? "selected" : null)">@category</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="brand" class="form-label">Brand</label>
+                            <select class="form-select" name="brand" id="brand">
+                                <option value="">All Brands</option>
+                                @{
+                                    var currentBrand = filterViewModel.CurrentBrand as string;
+                                }
+                                @foreach (var brand in filterViewModel .Brands)
+                                {
+                                    <option value="@brand" selected="@(brand == currentBrand ? "selected" : null)">@brand</option>
+                                }
+                            </select>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">Price Range</label>
+                            <div class="d-flex justify-content-between">
+                                <span id="priceRangeMin">@Model.PriceRange.CurrentMin</span>
+                                <span id="priceRangeMax">@Model.PriceRange.CurrentMax</span>
+                            </div>
+                            <div id="priceRangeSlider" class="mt-2"></div>
+                            <input type="hidden" id="minPrice" name="minPrice" value="@filterViewModel .CurrentMinPrice">
+                            <input type="hidden" id="maxPrice" name="maxPrice" value="@filterViewModel .CurrentMaxPrice">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="minRating" class="form-label">Min Rating</label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-2" id="ratingRange" min="0" max="5" step="0.1" 
+                                       value="@(filterViewModel .CurrentMinRating ?? 0)">
+                                <span id="ratingValue">@(filterViewModel .CurrentMinRating ?? 0)</span>
+                                <input type="hidden" name="minRating" id="minRating" value="@filterViewModel .CurrentMinRating">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Features</label>
+                            <div class="features-container">
+                                @foreach (var feature in filterViewModel .AllFeatures)
+                                {
+                                    bool isChecked = !string.IsNullOrEmpty(filterViewModel .CurrentFeatures) && 
+                                                    filterViewModel .CurrentFeatures.Split(',').Contains(feature);
+                                    <div class="form-check">
+                                        <input class="form-check-input feature-checkbox" type="checkbox" 
+                                               value="@feature" id="feature_@feature.Replace(" ", "_")" @(isChecked ? "checked=\"checked\"" : "")>
+                                        <label class="form-check-label" for="feature_@feature.Replace(" ", "_")">
+                                            @feature
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <input type="hidden" name="features" id="featuresInput" value="@filterViewModel .CurrentFeatures">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Availability</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="true" id="inStock" name="inStock"
+                                       @(filterViewModel .CurrentInStock == true ? "checked=\"checked\"" : "")>
+                                <label class="form-check-label" for="inStock">
+                                    In Stock Only
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                        <button type="button" id="resetFilters" class="btn btn-outline-secondary w-100 mt-2">Reset Filters</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product List -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="text-muted">Showing @Model.Products.Count of @Model.TotalProducts products</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <label class="me-2">Sort By:</label>
+                    <select class="form-select form-select-sm me-2" id="sortBy" name="sortBy">
+                        @{
+                            var currentSortBy = filterViewModel .CurrentSortBy as string;
+                        }
+                        <option value="name" selected="@(currentSortBy == "name" ? "selected" : null)">Name</option>
+                        <option value="price" selected="@(currentSortBy == "price" ? "selected" : null)">Price</option>
+                        <option value="rating" selected="@(currentSortBy == "rating" ? "selected" : null)">Rating</option>
+                    </select>
+
+                    <select class="form-select form-select-sm" id="sortDirection" name="sortDirection">
+                        @{
+                            var currentSortDirection = filterViewModel .CurrentSortDirection as string;
+                        }
+                        <option value="asc" selected="@(currentSortDirection == "asc" ? "selected" : null)">Ascending</option>
+                        <option value="desc" selected="@(currentSortDirection == "desc" ? "selected" : null)">Descending</option>
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 g-4 product-grid">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="col">
+                        <div class="card h-100 product-card" data-product-id="@product.Id">
+                            <div class="position-relative">
+                                @if (!product.InStock)
+                                {
+                                    <div class="out-of-stock-badge">Out of Stock</div>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@product.Name</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@product.Brand</h6>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span class="price">$@product.Price</span>
+                                    <div class="rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Floor(product.Rating))
+                                            {
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            }
+                                            else if (i - product.Rating > 0 && i - product.Rating < 1)
+                                            {
+                                                <i class="bi bi-star-half text-warning"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-star text-warning"></i>
+                                            }
+                                        }
+                                        <span class="ms-1">(@product.Rating)</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="features mt-2">
+                                    @foreach (var feature in product.Features)
+                                    {
+                                        <span class="badge bg-secondary me-1">@feature</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-footer">
+          
+                                <button class="btn btn-sm @(product.InStock ? "btn-primary" : "btn-secondary disabled") add-to-cart" 
+                                    data-product-id="@product.Id">
+                                    @(product.InStock ? "Add to Cart" : "Out of Stock")
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.Products.Count == 0)
+            {
+                <div class="alert alert-info mt-3">
+                    No products found matching your criteria. Please try different filters.
+                </div>
+            }
+
+            <!-- Pagination -->
+            @if (filterViewModel .TotalPages > 1)
+            {
+                <nav aria-label="Product pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(filterViewModel.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" href="javascript:void(0);" onclick="changePage(@(filterViewModel.CurrentPage - 1))">Previous</a>
+                        </li>
+
+                        @if (filterViewModel.TotalPages <= 7)
+                        {
+                            // Show all pages if not too many
+                            for (int i = 1; i <= filterViewModel.TotalPages; i++)
+                            {
+                                <li class="page-item @(filterViewModel.CurrentPage == i ? "active" : "")">
+                                    <a class="page-link" href="javascript:void(0);" onclick="changePage(@i)">@i</a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            // Always show first page
+                            <li class="page-item @(filterViewModel.CurrentPage == 1 ? "active" : "")">
+                                <a class="page-link" href="javascript:void(0);" onclick="changePage(1)">1</a>
+                            </li>
+
+                            // Show ellipsis if needed
+                            if (filterViewModel.CurrentPage > 4)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+
+                            // Show current ±2 pages
+                            for (int i = Math.Max(2, filterViewModel.CurrentPage - 2); i <= Math.Min(filterViewModel.TotalPages - 1, filterViewModel.CurrentPage + 2); i++)
+                            {
+                                <li class="page-item @(filterViewModel.CurrentPage == i ? "active" : "")">
+                                    <a class="page-link" href="javascript:void(0);" onclick="changePage(@i)">@i</a>
+                                </li>
+                            }
+
+                            // Show ellipsis before last page if needed
+                            if (filterViewModel.CurrentPage < filterViewModel.TotalPages - 3)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+
+                            // Always show last page
+                            <li class="page-item @(filterViewModel.CurrentPage == filterViewModel.TotalPages ? "active" : "")">
+                                <a class="page-link" href="javascript:void(0);" onclick="changePage(@filterViewModel.TotalPages)">@filterViewModel.TotalPages</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(filterViewModel.CurrentPage == filterViewModel.TotalPages ? "disabled" : "")">
+                            <a class="page-link" href="javascript:void(0);" onclick="changePage(@(filterViewModel.CurrentPage + 1))">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Product Quick View Modal -->
+<div class="modal fade" id="productQuickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickViewProductName"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                 
+                    <div class="col-md-7">
+                        <h4 id="quickViewProductBrand" class="text-muted"></h4>
+                        <div id="quickViewProductRating" class="mb-2"></div>
+                        <h3 id="quickViewProductPrice" class="text-primary mb-3"></h3>
+                        <p id="quickViewProductAvailability" class="mb-3"></p>
+                        <div class="mb-3">
+                            <h5>Features:</h5>
+                            <div id="quickViewProductFeatures"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="quickViewAddToCart">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.css">
+    <style>
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .rating {
+            font-size: 0.9rem;
+        }
+        
+        .price {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #212529;
+        }
+        
+        .out-of-stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        .features-container {
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        /* Custom scrollbar */
+        .features-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .features-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .features-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        
+        .features-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize price range slider
+            const priceSlider = document.getElementById('priceRangeSlider');
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            const priceRangeMin = document.getElementById('priceRangeMin');
+            const priceRangeMax = document.getElementById('priceRangeMax');
+            
+            // Get price range values
+            const minPrice = @Model.PriceRange.Min;
+            const maxPrice = @Model.PriceRange.Max;
+            const currentMinPrice = @(filterViewModel .CurrentMinPrice ?? Model.PriceRange.Min);
+            const currentMaxPrice = @(filterViewModel .CurrentMaxPrice ?? Model.PriceRange.Max);
+            
+            noUiSlider.create(priceSlider, {
+                start: [currentMinPrice, currentMaxPrice],
+                connect: true,
+                step: 50,
+                range: {
+                    'min': minPrice,
+                    'max': maxPrice
+                }
+            });
+            
+            priceSlider.noUiSlider.on('update', function(values, handle) {
+                const value = Math.floor(values[handle]);
+                
+                if (handle === 0) {
+                    minPriceInput.value = value;
+                    priceRangeMin.textContent = '$' + value;
+                } else {
+                    maxPriceInput.value = value;
+                    priceRangeMax.textContent = '$' + value;
+                }
+            });
+            
+            // Rating range slider
+            const ratingRange = document.getElementById('ratingRange');
+            const ratingValue = document.getElementById('ratingValue');
+            const minRatingInput = document.getElementById('minRating');
+            
+            ratingRange.addEventListener('input', function() {
+                ratingValue.textContent = this.value;
+                minRatingInput.value = this.value;
+            });
+            
+            // Feature checkboxes
+            const featureCheckboxes = document.querySelectorAll('.feature-checkbox');
+            const featuresInput = document.getElementById('featuresInput');
+            
+            featureCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateFeaturesInput);
+            });
+            
+            function updateFeaturesInput() {
+                const selectedFeatures = [];
+                featureCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedFeatures.push(checkbox.value);
+                    }
+                });
+                featuresInput.value = selectedFeatures.join(',');
+            }
+            
+            // Sort controls
+            const sortBySelect = document.getElementById('sortBy');
+            const sortDirectionSelect = document.getElementById('sortDirection');
+            
+            sortBySelect.addEventListener('change', applySort);
+            sortDirectionSelect.addEventListener('change', applySort);
+            
+            function applySort() {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('sortBy', sortBySelect.value);
+                currentUrl.searchParams.set('sortDirection', sortDirectionSelect.value);
+                currentUrl.searchParams.set('page', 1); // Reset to first page when sorting
+                window.location.href = currentUrl.toString();
+            }
+            
+            // Reset filters button
+            document.getElementById('resetFilters').addEventListener('click', function() {
+                window.location.href = '@Url.Action("Index", "Product")';
+            });
+            
+            // Product quick view
+            const quickViewButtons = document.querySelectorAll('.quick-view');
+            const quickViewModal = new bootstrap.Modal(document.getElementById('productQuickViewModal'));
+            
+            quickViewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    
+                    fetch(`@Url.Action("GetProductDetails", "Product")?id=${productId}`)
+                        .then(response => response.json())
+                        .then(product => {
+                            // Populate modal with product details
+                            document.getElementById('quickViewProductName').textContent = product.name;
+                            document.getElementById('quickViewProductBrand').textContent = product.brand;
+                            document.getElementById('quickViewProductPrice').textContent = '$' + product.price;
+                            document.getElementById('quickViewProductImage').src = product.imageUrl;
+                            
+                            // Availability
+                            const availabilityEl = document.getElementById('quickViewProductAvailability');
+                            if (product.inStock) {
+                                availabilityEl.innerHTML = '<span class="badge bg-success">In Stock</span>';
+                                document.getElementById('quickViewAddToCart').classList.remove('disabled');
+                            } else {
+                                availabilityEl.innerHTML = '<span class="badge bg-danger">Out of Stock</span>';
+                                document.getElementById('quickViewAddToCart').classList.add('disabled');
+                            }
+                            
+                            // Features
+                            const featuresEl = document.getElementById('quickViewProductFeatures');
+                            featuresEl.innerHTML = '';
+                            product.features.forEach(feature => {
+                                const badge = document.createElement('span');
+                                badge.className = 'badge bg-secondary me-1';
+                                badge.textContent = feature;
+                                featuresEl.appendChild(badge);
+                            });
+                            
+                            // Rating
+                            const ratingEl = document.getElementById('quickViewProductRating');
+                            ratingEl.innerHTML = '';
+                            
+                            for (let i = 1; i <= 5; i++) {
+                                const star = document.createElement('i');
+                                
+                                if (i <= Math.floor(product.rating)) {
+                                    star.className = 'bi bi-star-fill text-warning';
+                                } else if (i - product.rating > 0 && i - product.rating < 1) {
+                                    star.className = 'bi bi-star-half text-warning';
+                                } else {
+                                    star.className = 'bi bi-star text-warning';
+                                }
+                                
+                                ratingEl.appendChild(star);
+                            }
+                            
+                            const ratingText = document.createElefment('span');
+                            ratingText.className = 'ms-1';
+                            ratingText.textContent = '(' + product.rating + ')';
+                            ratingEl.appendChild(ratingText);
+                            
+                            // Set the product ID for the add to cart button
+                            document.getElementById('quickViewAddToCart').setAttribute('data-product-id', product.id);
+                            
+                            quickViewModal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching product details:', error);
+                        });
+                });
+            });
+            
+            // Add to cart functionality
+            document.querySelectorAll('.add-to-cart, #quickViewAddToCart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    
+                    // Here you could implement cart functionality using localStorage,
+                    // or make an AJAX call to add the item to the cart on the server
+                    console.log(`Adding product ${productId} to cart`);
+                    
+                    // Show a simple notification
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed bottom-0 end-0 p-3';
+                    toast.style.zIndex = '5';
+                    toast.innerHTML = `
+                        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="toast-header">
+                                <strong class="me-auto">Shopping Cart</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                                Product added to cart!
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 3000);
+                });
+            });
+            
+            // Pagination function
+            window.changePage = function(page) {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('page', page);
+                window.location.href = currentUrl.toString();
+            };
+        });
+    </script>
+}
