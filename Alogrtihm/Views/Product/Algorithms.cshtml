@@ -1,0 +1,191 @@
+@{
+    ViewData["Title"] = "Sorting Algorithms";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Sorting Algorithms</h1>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Algorithm Comparison</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Algorithm</th>
+                                    <th>Time Complexity</th>
+                                    <th>Space Complexity</th>
+                                    <th>Best For</th>
+                                    <th>Worst For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Quick Sort</strong>
+                                        <div class="algorithm-complexity">O(n log n) average</div>
+                                    </td>
+                                    <td>O(n log n) average, O(n²) worst</td>
+                                    <td>O(log n)</td>
+                                    <td>Large datasets, general purpose</td>
+                                    <td>Nearly sorted data</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Merge Sort</strong>
+                                        <div class="algorithm-complexity">O(n log n)</div>
+                                    </td>
+                                    <td>O(n log n)</td>
+                                    <td>O(n)</td>
+                                    <td>Stable sorting, large datasets</td>
+                                    <td>Small datasets (due to overhead)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Heap Sort</strong>
+                                        <div class="algorithm-complexity">O(n log n)</div>
+                                    </td>
+                                    <td>O(n log n)</td>
+                                    <td>O(1)</td>
+                                    <td>Memory-constrained systems</td>
+                                    <td>Nearly sorted data</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Shell Sort</strong>
+                                        <div class="algorithm-complexity">O(n log² n)</div>
+                                    </td>
+                                    <td>O(n log² n)</td>
+                                    <td>O(1)</td>
+                                    <td>Medium-sized datasets</td>
+                                    <td>Very large datasets</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Insertion Sort</strong>
+                                        <div class="algorithm-complexity">O(n²)</div>
+                                    </td>
+                                    <td>O(n²)</td>
+                                    <td>O(1)</td>
+                                    <td>Small datasets, nearly sorted data</td>
+                                    <td>Large datasets</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Selection Sort</strong>
+                                        <div class="algorithm-complexity">O(n²)</div>
+                                    </td>
+                                    <td>O(n²)</td>
+                                    <td>O(1)</td>
+                                    <td>Small datasets, minimal swaps</td>
+                                    <td>Large datasets</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Bubble Sort</strong>
+                                        <div class="algorithm-complexity">O(n²)</div>
+                                    </td>
+                                    <td>O(n²)</td>
+                                    <td>O(1)</td>
+                                    <td>Educational purposes, very small datasets</td>
+                                    <td>Any practical use</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">When to Use Each Algorithm</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h6>Quick Sort</h6>
+                                <p>Best for general-purpose sorting. Excellent average-case performance and works well with most data distributions.</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6>Merge Sort</h6>
+                                <p>Ideal when you need a stable sort or when memory usage isn't a concern. Consistent performance regardless of data distribution.</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6>Heap Sort</h6>
+                                <p>Great when memory usage is a concern. Provides consistent O(n log n) performance but is not stable.</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6>Shell Sort</h6>
+                                <p>Good for medium-sized datasets. Combines the benefits of insertion sort with improved performance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Performance Tips</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Use Quick Sort for most general-purpose sorting needs
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Choose Merge Sort when stability is required
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Use Heap Sort when memory is limited
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Consider Insertion Sort for small datasets
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Avoid Bubble Sort for practical applications
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .algorithm-complexity {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .list-unstyled li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .list-unstyled li:last-child {
+            border-bottom: none;
+        }
+    </style>
+} 

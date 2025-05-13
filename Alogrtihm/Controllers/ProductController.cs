@@ -1,34 +1,60 @@
 ﻿using Algorithm.Models;
 using Algorithm.Services;
-using Microsoft.AspNetCore.Mvc;
 using Alogrtihm.ViewModel;
 using Alogrtihm.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Algorithm.Controllers
 {
     public class ProductController : Controller
     {
+        #region Fields
+
         private readonly IProductService _productService;
         private readonly ISortingService _sortingService;
 
-        public ProductController(IProductService productService, ISortingService sortingService)
+        #endregion
+
+        #region Constructor
+
+        public ProductController(
+            IProductService productService,
+            ISortingService sortingService)
         {
             _productService = productService;
             _sortingService = sortingService;
         }
 
-        public ActionResult Index(string category, string brand, decimal? minPrice, decimal? maxPrice,
-                            double? minRating, string sortBy = "name", string sortDirection = "asc",
-                            string features = "", bool? inStock = null, int page = 1, int pageSize = 4)
+        #endregion
+
+        #region Actions
+
+        public ActionResult Index(
+            string category,
+            string brand,
+            decimal? minPrice,
+            decimal? maxPrice,
+            double? minRating,
+            string sortBy = "name",
+            string sortDirection = "asc",
+            string sortAlgorithm = "quick",
+            string features = "",
+            bool? inStock = null,
+            int page = 1,
+            int pageSize = 4)
         {
-            var featuresList = !string.IsNullOrEmpty(features)
-                ? features.Split(',').Select(f => f.Trim()).ToList()
-                : new List<string>();
+            // Parse features list from comma-separated string
+            var featuresList = string.IsNullOrWhiteSpace(features)
+                ? new List<string>()
+                : features.Split(',').Select(f => f.Trim()).ToList();
 
-            string cacheKey = $"{category}_{brand}_{minPrice}_{maxPrice}_{minRating}_{sortBy}_{sortDirection}_{features}_{inStock}_{page}_{pageSize}";
+            // Generate cache key (optional, could be used later)
+            string cacheKey = $"{category}_{brand}_{minPrice}_{maxPrice}_{minRating}_{sortBy}_{sortDirection}_{sortAlgorithm}_{features}_{inStock}_{page}_{pageSize}";
 
-            var products = _productService.GetAllProducts();
+            // Fetch all products
+            var allProducts = _productService.GetAllProducts();
 
+            // Build filtering metadata
             var filterViewModel = new FilterViewModel
             {
                 CurrentCategory = category,
@@ -38,43 +64,55 @@ namespace Algorithm.Controllers
                 CurrentMinRating = minRating,
                 CurrentSortBy = sortBy,
                 CurrentSortDirection = sortDirection,
+                CurrentSortAlgorithm = sortAlgorithm,
                 CurrentFeatures = features,
                 CurrentInStock = inStock,
                 CurrentPage = page,
                 PageSize = pageSize,
-                Categories = products.Select(p => p.Category).Distinct().ToList(),
-                Brands = products.Select(p => p.Brand).Distinct().ToList(),
-                AllFeatures = products.SelectMany(p => p.Features).Distinct().ToList()
+                Categories = allProducts.Select(p => p.Category).Distinct().ToList(),
+                Brands = allProducts.Select(p => p.Brand).Distinct().ToList(),
+                AllFeatures = allProducts.SelectMany(p => p.Features).Distinct().ToList()
             };
 
-            var filtered = _productService.FilterProducts(products, category, brand, minPrice, maxPrice, minRating, featuresList, inStock);
-            int totalItems = filtered.Count;
+            // Apply filtering
+            var filteredProducts = _productService.FilterProducts(
+                allProducts, category, brand, minPrice, maxPrice, minRating, featuresList, inStock);
 
-            // Calculate total pages
+            int totalItems = filteredProducts.Count;
             filterViewModel.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            // Sort products
-            filtered = _sortingService.SortProducts(filtered, sortBy, sortDirection);
+            // Sort the filtered products
+            var sortedProducts = _sortingService.SortProducts(filteredProducts, sortBy, sortDirection);
 
-            // Apply pagination
-            var paginatedResult = filtered.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            // Paginate the sorted products
+            var paginatedProducts = sortedProducts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-            var viewModel = new ProductViewModel
+            // Build final view model
+            var productViewModel = new ProductViewModel
             {
-                Products = paginatedResult,
+                Products = paginatedProducts,
                 TotalProducts = totalItems,
                 PriceRange = new PriceRange
                 {
-                    Min = products.Min(p => p.Price),
-                    Max = products.Max(p => p.Price),
-                    CurrentMin = minPrice ?? products.Min(p => p.Price),
-                    CurrentMax = maxPrice ?? products.Max(p => p.Price)
+                    Min = allProducts.Min(p => p.Price),
+                    Max = allProducts.Max(p => p.Price),
+                    CurrentMin = minPrice ?? allProducts.Min(p => p.Price),
+                    CurrentMax = maxPrice ?? allProducts.Max(p => p.Price)
                 }
             };
+
             ViewBag.FilterViewModel = filterViewModel;
-            return View(viewModel);
+            return View(productViewModel);
         }
 
-   
+        public IActionResult Algorithms()
+        {
+            return View();
+        }
+
+        #endregion
     }
 }

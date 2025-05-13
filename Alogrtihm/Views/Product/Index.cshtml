@@ -3,11 +3,25 @@
 @{
     ViewData["Title"] = "Product Catalog";
     var filterViewModel = ViewBag.FilterViewModel as FilterViewModel;
-
 }
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="mt-3" id="loadingText">Loading products...</div>
+    </div>
+</div>
+
 <div class="container mt-4">
-    <h1 class="mb-4">Product Catalog</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Product Catalog</h1>
+        <a href="@Url.Action("Algorithms", "Product")" class="btn btn-outline-primary">
+            <i class="bi bi-info-circle me-2"></i>View Sorting Algorithms
+        </a>
+    </div>
 
     <div class="row">
         <!-- Filter Sidebar -->
@@ -17,17 +31,14 @@
                     <h5 class="mb-0">Filter Products</h5>
                 </div>
                 <div class="card-body">
-                    <form method="get" id="filterForm">
+                    <form method="get" id="filterForm" action="@Url.Action("Index", "Product")">
                         <div class="mb-3">
                             <label for="category" class="form-label">Category</label>
                             <select class="form-select" name="category" id="category">
                                 <option value="">All Categories</option>
-                                @{
-                                    var currentCategory = filterViewModel.CurrentCategory as string;
-                                }
                                 @foreach (var category in filterViewModel.Categories)
                                 {
-                                    <option value="@category" selected="@(category == currentCategory ? "selected" : null)">@category</option>
+                                    <option value="@category" selected="@(category == filterViewModel.CurrentCategory)">@category</option>
                                 }
                             </select>
                         </div>
@@ -36,45 +47,41 @@
                             <label for="brand" class="form-label">Brand</label>
                             <select class="form-select" name="brand" id="brand">
                                 <option value="">All Brands</option>
-                                @{
-                                    var currentBrand = filterViewModel.CurrentBrand as string;
-                                }
-                                @foreach (var brand in filterViewModel .Brands)
+                                @foreach (var brand in filterViewModel.Brands)
                                 {
-                                    <option value="@brand" selected="@(brand == currentBrand ? "selected" : null)">@brand</option>
+                                    <option value="@brand" selected="@(brand == filterViewModel.CurrentBrand)">@brand</option>
                                 }
                             </select>
                         </div>
 
-
                         <div class="mb-3">
                             <label class="form-label">Price Range</label>
                             <div class="d-flex justify-content-between">
-                                <span id="priceRangeMin">@Model.PriceRange.CurrentMin</span>
-                                <span id="priceRangeMax">@Model.PriceRange.CurrentMax</span>
+                                <span id="priceRangeMin">$@Model.PriceRange.CurrentMin</span>
+                                <span id="priceRangeMax">$@Model.PriceRange.CurrentMax</span>
                             </div>
                             <div id="priceRangeSlider" class="mt-2"></div>
-                            <input type="hidden" id="minPrice" name="minPrice" value="@filterViewModel .CurrentMinPrice">
-                            <input type="hidden" id="maxPrice" name="maxPrice" value="@filterViewModel .CurrentMaxPrice">
+                            <input type="hidden" id="minPrice" name="minPrice" value="@filterViewModel.CurrentMinPrice">
+                            <input type="hidden" id="maxPrice" name="maxPrice" value="@filterViewModel.CurrentMaxPrice">
                         </div>
 
                         <div class="mb-3">
                             <label for="minRating" class="form-label">Min Rating</label>
                             <div class="d-flex align-items-center">
                                 <input type="range" class="form-range me-2" id="ratingRange" min="0" max="5" step="0.1" 
-                                       value="@(filterViewModel .CurrentMinRating ?? 0)">
-                                <span id="ratingValue">@(filterViewModel .CurrentMinRating ?? 0)</span>
-                                <input type="hidden" name="minRating" id="minRating" value="@filterViewModel .CurrentMinRating">
+                                       value="@(filterViewModel.CurrentMinRating ?? 0)">
+                                <span id="ratingValue">@(filterViewModel.CurrentMinRating ?? 0)</span>
+                                <input type="hidden" name="minRating" id="minRating" value="@filterViewModel.CurrentMinRating">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Features</label>
                             <div class="features-container">
-                                @foreach (var feature in filterViewModel .AllFeatures)
+                                @foreach (var feature in filterViewModel.AllFeatures)
                                 {
-                                    bool isChecked = !string.IsNullOrEmpty(filterViewModel .CurrentFeatures) && 
-                                                    filterViewModel .CurrentFeatures.Split(',').Contains(feature);
+                                    bool isChecked = !string.IsNullOrEmpty(filterViewModel.CurrentFeatures) && 
+                                                    filterViewModel.CurrentFeatures.Split(',').Contains(feature);
                                     <div class="form-check">
                                         <input class="form-check-input feature-checkbox" type="checkbox" 
                                                value="@feature" id="feature_@feature.Replace(" ", "_")" @(isChecked ? "checked=\"checked\"" : "")>
@@ -84,14 +91,14 @@
                                     </div>
                                 }
                             </div>
-                            <input type="hidden" name="features" id="featuresInput" value="@filterViewModel .CurrentFeatures">
+                            <input type="hidden" name="features" id="featuresInput" value="@filterViewModel.CurrentFeatures">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Availability</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="true" id="inStock" name="inStock"
-                                       @(filterViewModel .CurrentInStock == true ? "checked=\"checked\"" : "")>
+                                       @(filterViewModel.CurrentInStock == true ? "checked=\"checked\"" : "")>
                                 <label class="form-check-label" for="inStock">
                                     In Stock Only
                                 </label>
@@ -115,21 +122,47 @@
                     <label class="me-2">Sort By:</label>
                     <select class="form-select form-select-sm me-2" id="sortBy" name="sortBy">
                         @{
-                            var currentSortBy = filterViewModel .CurrentSortBy as string;
+                            var currentSortBy = filterViewModel.CurrentSortBy as string;
                         }
                         <option value="name" selected="@(currentSortBy == "name" ? "selected" : null)">Name</option>
                         <option value="price" selected="@(currentSortBy == "price" ? "selected" : null)">Price</option>
                         <option value="rating" selected="@(currentSortBy == "rating" ? "selected" : null)">Rating</option>
                     </select>
 
-                    <select class="form-select form-select-sm" id="sortDirection" name="sortDirection">
+                    <select class="form-select form-select-sm me-2" id="sortDirection" name="sortDirection">
                         @{
-                            var currentSortDirection = filterViewModel .CurrentSortDirection as string;
+                            var currentSortDirection = filterViewModel.CurrentSortDirection as string;
                         }
                         <option value="asc" selected="@(currentSortDirection == "asc" ? "selected" : null)">Ascending</option>
                         <option value="desc" selected="@(currentSortDirection == "desc" ? "selected" : null)">Descending</option>
                     </select>
 
+                    <select class="form-select form-select-sm sort-algorithm-select" id="sortAlgorithm" name="sortAlgorithm">
+                        @{
+                            var currentAlgorithm = filterViewModel.CurrentSortAlgorithm as string ?? "quick";
+                        }
+                        <option value="quick" selected="@(currentAlgorithm == "quick" ? "selected" : null)">
+                            Quick Sort (O(n log n) avg)
+                        </option>
+                        <option value="merge" selected="@(currentAlgorithm == "merge" ? "selected" : null)">
+                            Merge Sort (O(n log n))
+                        </option>
+                        <option value="bubble" selected="@(currentAlgorithm == "bubble" ? "selected" : null)">
+                            Bubble Sort (O(n²))
+                        </option>
+                        <option value="insertion" selected="@(currentAlgorithm == "insertion" ? "selected" : null)">
+                            Insertion Sort (O(n²))
+                        </option>
+                        <option value="selection" selected="@(currentAlgorithm == "selection" ? "selected" : null)">
+                            Selection Sort (O(n²))
+                        </option>
+                        <option value="heap" selected="@(currentAlgorithm == "heap" ? "selected" : null)">
+                            Heap Sort (O(n log n))
+                        </option>
+                        <option value="shell" selected="@(currentAlgorithm == "shell" ? "selected" : null)">
+                            Shell Sort (O(n log² n))
+                        </option>
+                    </select>
                 </div>
             </div>
 
@@ -178,11 +211,15 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-          
-                                <button class="btn btn-sm @(product.InStock ? "btn-primary" : "btn-secondary disabled") add-to-cart" 
-                                    data-product-id="@product.Id">
-                                    @(product.InStock ? "Add to Cart" : "Out of Stock")
-                                </button>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-sm btn-outline-primary quick-view" data-product-id="@product.Id">
+                                        Quick View
+                                    </button>
+                                    <button class="btn btn-sm @(product.InStock ? "btn-primary" : "btn-secondary disabled") add-to-cart" 
+                                        data-product-id="@product.Id">
+                                        @(product.InStock ? "Add to Cart" : "Out of Stock")
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,7 +234,7 @@
             }
 
             <!-- Pagination -->
-            @if (filterViewModel .TotalPages > 1)
+            @if (filterViewModel.TotalPages > 1)
             {
                 <nav aria-label="Product pagination" class="mt-4">
                     <ul class="pagination justify-content-center">
@@ -269,15 +306,14 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                 
-                    <div class="col-md-7">
-                        <h4 id="quickViewProductBrand" class="text-muted"></h4>
-                        <div id="quickViewProductRating" class="mb-2"></div>
+                    <div class="col-md-12">
+                        <h4 id="quickViewProductBrand" class="text-muted mb-3"></h4>
+                        <div id="quickViewProductRating" class="mb-3"></div>
                         <h3 id="quickViewProductPrice" class="text-primary mb-3"></h3>
-                        <p id="quickViewProductAvailability" class="mb-3"></p>
+                        <div id="quickViewProductAvailability" class="mb-3"></div>
                         <div class="mb-3">
                             <h5>Features:</h5>
-                            <div id="quickViewProductFeatures"></div>
+                            <div id="quickViewProductFeatures" class="d-flex flex-wrap gap-2"></div>
                         </div>
                     </div>
                 </div>
@@ -292,266 +328,461 @@
 
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css">
     <style>
-        .product-image {
-            height: 200px;
-            object-fit: cover;
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --background-color: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            padding: 2rem;
+        }
+
+        /* Header Styling */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        /* Card Styling */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Controls */
+        .form-select, .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+        }
+
+        /* Product Cards */
         .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        
+
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: var(--hover-shadow);
         }
-        
-        .rating {
-            font-size: 0.9rem;
+
+        .product-card .card-title {
+            font-weight: 700;
+            color: var(--secondary-color);
         }
-        
-        .price {
+
+        .product-card .price {
             font-size: 1.25rem;
-            font-weight: bold;
-            color: #212529;
+            font-weight: 700;
+            color: var(--primary-color);
         }
-        
-        .out-of-stock-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(0,0,0,0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 0.8rem;
+
+        .rating i {
+            color: #f1c40f;
         }
-        
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* Sorting Animation */
+        .sorting-in-progress .product-card {
+            transition: all 0.5s ease;
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+
+        .sorting-in-progress .product-card:hover {
+            transform: scale(1.02);
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .sorting-info {
+            position: sticky;
+            top: 1rem;
+            z-index: 1000;
+            margin-bottom: 1rem;
+            animation: slideIn 0.5s ease-out;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            box-shadow: var(--card-shadow);
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Price Range Slider */
+        .noUi-connect {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+        }
+
+        .noUi-handle {
+            border-radius: 50%;
+            background: white;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Features Container */
         .features-container {
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
-            padding-right: 5px;
+            padding: 1rem;
+            border-radius: 8px;
+            background: #f8f9fa;
         }
-        
-        /* Custom scrollbar */
+
         .features-container::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
-        
+
         .features-container::-webkit-scrollbar-track {
             background: #f1f1f1;
+            border-radius: 4px;
         }
-        
+
         .features-container::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
+            background: var(--primary-color);
+            border-radius: 4px;
         }
-        
-        .features-container::-webkit-scrollbar-thumb:hover {
-            background: #555;
+
+        /* Pagination */
+        .pagination {
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            border: none;
+            color: var(--primary-color);
+            padding: 0.75rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+        }
+
+        /* Quick View Modal */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: var(--hover-shadow);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            border: none;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1.5rem;
+        }
+
+        /* Out of Stock Badge */
+        .out-of-stock-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        /* Loading Spinner */
+        .spinner-border {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading-content .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Algorithm Info Animation */
+        .sorting-info {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Product Card Animation */
+        .product-card {
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        /* Sorting Animation */
+        .sorting-in-progress .product-card {
+            transition: all 0.5s ease;
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+
+        .sorting-in-progress .product-card:hover {
+            transform: scale(1.02);
+            opacity: 1;
+            z-index: 1;
         }
     </style>
 }
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize price range slider
-            const priceSlider = document.getElementById('priceRangeSlider');
-            const minPriceInput = document.getElementById('minPrice');
-            const maxPriceInput = document.getElementById('maxPrice');
-            const priceRangeMin = document.getElementById('priceRangeMin');
-            const priceRangeMax = document.getElementById('priceRangeMax');
-            
-            // Get price range values
-            const minPrice = @Model.PriceRange.Min;
-            const maxPrice = @Model.PriceRange.Max;
-            const currentMinPrice = @(filterViewModel .CurrentMinPrice ?? Model.PriceRange.Min);
-            const currentMaxPrice = @(filterViewModel .CurrentMaxPrice ?? Model.PriceRange.Max);
-            
-            noUiSlider.create(priceSlider, {
-                start: [currentMinPrice, currentMaxPrice],
-                connect: true,
-                step: 50,
-                range: {
-                    'min': minPrice,
-                    'max': maxPrice
-                }
+        // Initialize variables needed by site.js
+        window.currentMinPrice = @(filterViewModel.CurrentMinPrice ?? Model.PriceRange.Min);
+        window.currentMaxPrice = @(filterViewModel.CurrentMaxPrice ?? Model.PriceRange.Max);
+        window.minPrice = @Model.PriceRange.Min;
+        window.maxPrice = @Model.PriceRange.Max;
+        window.resetFiltersUrl = '@Url.Action("Index", "Product")';
+        window.getProductDetailsUrl = '@Url.Action("GetProductDetails", "Product")';
+
+        // Show loading overlay
+        function showLoading(message = 'Loading...') {
+            document.getElementById('loadingText').textContent = message;
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // Handle form submission
+        const filterForm = document.getElementById('filterForm');
+        if (filterForm) {
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showLoading('Applying filters...');
+                this.submit();
             });
-            
-            priceSlider.noUiSlider.on('update', function(values, handle) {
-                const value = Math.floor(values[handle]);
-                
-                if (handle === 0) {
-                    minPriceInput.value = value;
-                    priceRangeMin.textContent = '$' + value;
-                } else {
-                    maxPriceInput.value = value;
-                    priceRangeMax.textContent = '$' + value;
-                }
+        }
+
+        // Handle sort changes
+        const sortControls = document.querySelectorAll('#sortBy, #sortDirection, #sortAlgorithm');
+        sortControls.forEach(control => {
+            control.addEventListener('change', function() {
+                showLoading('Updating sort...');
             });
-            
-            // Rating range slider
-            const ratingRange = document.getElementById('ratingRange');
-            const ratingValue = document.getElementById('ratingValue');
-            const minRatingInput = document.getElementById('minRating');
-            
-            ratingRange.addEventListener('input', function() {
-                ratingValue.textContent = this.value;
-                minRatingInput.value = this.value;
-            });
-            
-            // Feature checkboxes
-            const featureCheckboxes = document.querySelectorAll('.feature-checkbox');
-            const featuresInput = document.getElementById('featuresInput');
-            
-            featureCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateFeaturesInput);
-            });
-            
-            function updateFeaturesInput() {
-                const selectedFeatures = [];
-                featureCheckboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        selectedFeatures.push(checkbox.value);
-                    }
-                });
-                featuresInput.value = selectedFeatures.join(',');
-            }
-            
-            // Sort controls
-            const sortBySelect = document.getElementById('sortBy');
-            const sortDirectionSelect = document.getElementById('sortDirection');
-            
-            sortBySelect.addEventListener('change', applySort);
-            sortDirectionSelect.addEventListener('change', applySort);
-            
-            function applySort() {
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('sortBy', sortBySelect.value);
-                currentUrl.searchParams.set('sortDirection', sortDirectionSelect.value);
-                currentUrl.searchParams.set('page', 1); // Reset to first page when sorting
-                window.location.href = currentUrl.toString();
-            }
-            
-            // Reset filters button
-            document.getElementById('resetFilters').addEventListener('click', function() {
-                window.location.href = '@Url.Action("Index", "Product")';
-            });
-            
-            // Product quick view
-            const quickViewButtons = document.querySelectorAll('.quick-view');
-            const quickViewModal = new bootstrap.Modal(document.getElementById('productQuickViewModal'));
-            
-            quickViewButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-product-id');
-                    
-                    fetch(`@Url.Action("GetProductDetails", "Product")?id=${productId}`)
-                        .then(response => response.json())
-                        .then(product => {
-                            // Populate modal with product details
-                            document.getElementById('quickViewProductName').textContent = product.name;
-                            document.getElementById('quickViewProductBrand').textContent = product.brand;
-                            document.getElementById('quickViewProductPrice').textContent = '$' + product.price;
-                            document.getElementById('quickViewProductImage').src = product.imageUrl;
-                            
-                            // Availability
-                            const availabilityEl = document.getElementById('quickViewProductAvailability');
-                            if (product.inStock) {
-                                availabilityEl.innerHTML = '<span class="badge bg-success">In Stock</span>';
-                                document.getElementById('quickViewAddToCart').classList.remove('disabled');
-                            } else {
-                                availabilityEl.innerHTML = '<span class="badge bg-danger">Out of Stock</span>';
-                                document.getElementById('quickViewAddToCart').classList.add('disabled');
-                            }
-                            
-                            // Features
-                            const featuresEl = document.getElementById('quickViewProductFeatures');
-                            featuresEl.innerHTML = '';
-                            product.features.forEach(feature => {
-                                const badge = document.createElement('span');
-                                badge.className = 'badge bg-secondary me-1';
-                                badge.textContent = feature;
-                                featuresEl.appendChild(badge);
-                            });
-                            
-                            // Rating
-                            const ratingEl = document.getElementById('quickViewProductRating');
-                            ratingEl.innerHTML = '';
-                            
-                            for (let i = 1; i <= 5; i++) {
-                                const star = document.createElement('i');
-                                
-                                if (i <= Math.floor(product.rating)) {
-                                    star.className = 'bi bi-star-fill text-warning';
-                                } else if (i - product.rating > 0 && i - product.rating < 1) {
-                                    star.className = 'bi bi-star-half text-warning';
-                                } else {
-                                    star.className = 'bi bi-star text-warning';
-                                }
-                                
-                                ratingEl.appendChild(star);
-                            }
-                            
-                            const ratingText = document.createElefment('span');
-                            ratingText.className = 'ms-1';
-                            ratingText.textContent = '(' + product.rating + ')';
-                            ratingEl.appendChild(ratingText);
-                            
-                            // Set the product ID for the add to cart button
-                            document.getElementById('quickViewAddToCart').setAttribute('data-product-id', product.id);
-                            
-                            quickViewModal.show();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching product details:', error);
-                        });
-                });
-            });
-            
-            // Add to cart functionality
-            document.querySelectorAll('.add-to-cart, #quickViewAddToCart').forEach(button => {
-                button.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-product-id');
-                    
-                    // Here you could implement cart functionality using localStorage,
-                    // or make an AJAX call to add the item to the cart on the server
-                    console.log(`Adding product ${productId} to cart`);
-                    
-                    // Show a simple notification
-                    const toast = document.createElement('div');
-                    toast.className = 'position-fixed bottom-0 end-0 p-3';
-                    toast.style.zIndex = '5';
-                    toast.innerHTML = `
-                        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">Shopping Cart</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                            <div class="toast-body">
-                                Product added to cart!
-                            </div>
-                        </div>
-                    `;
-                    
-                    document.body.appendChild(toast);
-                    
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 3000);
-                });
-            });
-            
-            // Pagination function
-            window.changePage = function(page) {
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('page', page);
-                window.location.href = currentUrl.toString();
-            };
         });
+
+        // Handle pagination
+        document.querySelectorAll('.pagination .page-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showLoading('Loading page...');
+                const page = this.getAttribute('onclick').match(/\d+/)[0];
+                window.changePage(page);
+            });
+        });
+
+        // Handle reset filters
+        const resetButton = document.getElementById('resetFilters');
+        if (resetButton) {
+            resetButton.addEventListener('click', function() {
+                showLoading('Resetting filters...');
+            });
+        }
+
+        // Handle price range changes
+        const priceSlider = document.getElementById('priceRangeSlider');
+        if (priceSlider && priceSlider.noUiSlider) {
+            priceSlider.noUiSlider.on('change', function() {
+                showLoading('Updating price range...');
+            });
+        }
+
+        // Handle rating range changes
+        const ratingRange = document.getElementById('ratingRange');
+        if (ratingRange) {
+            ratingRange.addEventListener('change', function() {
+                showLoading('Updating rating filter...');
+            });
+        }
+
+        // Handle feature checkbox changes
+        const featureCheckboxes = document.querySelectorAll('.feature-checkbox');
+        featureCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                showLoading('Updating features...');
+            });
+        });
+
+        // Handle in-stock checkbox changes
+        const inStockCheckbox = document.getElementById('inStock');
+        if (inStockCheckbox) {
+            inStockCheckbox.addEventListener('change', function() {
+                showLoading('Updating availability filter...');
+            });
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
+    <script src="~/js/site.js"></script>
 }

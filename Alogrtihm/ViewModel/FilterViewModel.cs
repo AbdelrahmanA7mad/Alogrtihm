@@ -9,6 +9,7 @@
         public double? CurrentMinRating { get; set; }
         public string CurrentSortBy { get; set; }
         public string CurrentSortDirection { get; set; }
+        public string CurrentSortAlgorithm { get; set; }
         public string CurrentFeatures { get; set; }
         public bool? CurrentInStock { get; set; }
         public int CurrentPage { get; set; }
