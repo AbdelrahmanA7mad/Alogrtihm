@@ -35,7 +35,7 @@ namespace Algorithm.Controllers
             decimal? minPrice,
             decimal? maxPrice,
             double? minRating,
-            string sortBy = "name",
+            string sortBy = "price",
             string sortDirection = "asc",
             string sortAlgorithm = "quick",
             string features = "",
@@ -82,7 +82,7 @@ namespace Algorithm.Controllers
             filterViewModel.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
             // Sort the filtered products
-            var sortedProducts = _sortingService.SortProducts(filteredProducts, sortBy, sortDirection);
+            var sortedProducts = _sortingService.SortProducts(filteredProducts, sortBy, sortDirection , sortAlgorithm);
 
             // Paginate the sorted products
             var paginatedProducts = sortedProducts

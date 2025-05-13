@@ -1,7 +1,7 @@
 ﻿@using Alogrtihm.ViewModel
 @model ProductViewModel
 @{
-    ViewData["Title"] = "Product Catalog";
+    ViewData["Title"] = "Filteration System";
     var filterViewModel = ViewBag.FilterViewModel as FilterViewModel;
 }
 
@@ -17,9 +17,9 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Product Catalog</h1>
+        <h1>Filteration System</h1>
         <a href="@Url.Action("Algorithms", "Product")" class="btn btn-outline-primary">
-            <i class="bi bi-info-circle me-2"></i>View Sorting Algorithms
+            <i class="bi bi-info-circle me-2"></i>View Used Algorithms
         </a>
     </div>
 
@@ -68,7 +68,7 @@
                         <div class="mb-3">
                             <label for="minRating" class="form-label">Min Rating</label>
                             <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-2" id="ratingRange" min="0" max="5" step="0.1" 
+                                <input type="range" class="form-range me-2" id="ratingRange" min="0" max="5" step="0.1"
                                        value="@(filterViewModel.CurrentMinRating ?? 0)">
                                 <span id="ratingValue">@(filterViewModel.CurrentMinRating ?? 0)</span>
                                 <input type="hidden" name="minRating" id="minRating" value="@filterViewModel.CurrentMinRating">
@@ -80,10 +80,10 @@
                             <div class="features-container">
                                 @foreach (var feature in filterViewModel.AllFeatures)
                                 {
-                                    bool isChecked = !string.IsNullOrEmpty(filterViewModel.CurrentFeatures) && 
-                                                    filterViewModel.CurrentFeatures.Split(',').Contains(feature);
+                                    bool isChecked = !string.IsNullOrEmpty(filterViewModel.CurrentFeatures) &&
+                                    filterViewModel.CurrentFeatures.Split(',').Contains(feature);
                                     <div class="form-check">
-                                        <input class="form-check-input feature-checkbox" type="checkbox" 
+                                        <input class="form-check-input feature-checkbox" type="checkbox"
                                                value="@feature" id="feature_@feature.Replace(" ", "_")" @(isChecked ? "checked=\"checked\"" : "")>
                                         <label class="form-check-label" for="feature_@feature.Replace(" ", "_")">
                                             @feature
@@ -98,7 +98,7 @@
                             <label class="form-label">Availability</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="true" id="inStock" name="inStock"
-                                       @(filterViewModel.CurrentInStock == true ? "checked=\"checked\"" : "")>
+                                @(filterViewModel.CurrentInStock == true ? "checked=\"checked\"" : "")>
                                 <label class="form-check-label" for="inStock">
                                     In Stock Only
                                 </label>
@@ -180,7 +180,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">@product.Name</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">@product.Brand</h6>
-                                
+
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <span class="price">$@product.Price</span>
                                     <div class="rating">
@@ -202,7 +202,7 @@
                                         <span class="ms-1">(@product.Rating)</span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="features mt-2">
                                     @foreach (var feature in product.Features)
                                     {
@@ -215,8 +215,8 @@
                                     <button class="btn btn-sm btn-outline-primary quick-view" data-product-id="@product.Id">
                                         Quick View
                                     </button>
-                                    <button class="btn btn-sm @(product.InStock ? "btn-primary" : "btn-secondary disabled") add-to-cart" 
-                                        data-product-id="@product.Id">
+                                    <button class="btn btn-sm @(product.InStock ? "btn-primary" : "btn-secondary disabled") add-to-cart"
+                                            data-product-id="@product.Id">
                                         @(product.InStock ? "Add to Cart" : "Out of Stock")
                                     </button>
                                 </div>
@@ -375,467 +375,7 @@
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css">
-    <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --background-color: #f8f9fa;
-            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        body {
-            background-color: var(--background-color);
-        }
-
-        .container {
-            max-width: 1400px;
-            padding: 2rem;
-        }
-
-        /* Header Styling */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin-bottom: 2rem;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100px;
-            height: 4px;
-            background: var(--primary-color);
-            border-radius: 2px;
-        }
-
-        /* Card Styling */
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color), #2980b9);
-            color: white;
-            border: none;
-            padding: 1.5rem;
-        }
-
-        .card-header h5 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        /* Form Controls */
-        .form-select, .form-control {
-            border-radius: 8px;
-            border: 2px solid #e9ecef;
-            padding: 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-select:focus, .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--secondary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Buttons */
-        .btn {
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), #2980b9);
-            border: none;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
-        }
-
-        /* Product Cards */
-        .product-card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
-        }
-
-        .product-card .card-title {
-            font-weight: 700;
-            color: var(--secondary-color);
-        }
-
-        .product-card .price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .rating i {
-            color: #f1c40f;
-        }
-
-        .badge {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        /* Sorting Animation */
-        .sorting-in-progress .product-card {
-            transition: all 0.5s ease;
-            opacity: 0.7;
-            transform: scale(0.98);
-        }
-
-        .sorting-in-progress .product-card:hover {
-            transform: scale(1.02);
-            opacity: 1;
-            z-index: 1;
-        }
-
-        .sorting-info {
-            position: sticky;
-            top: 1rem;
-            z-index: 1000;
-            margin-bottom: 1rem;
-            animation: slideIn 0.5s ease-out;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #fff, #f8f9fa);
-            box-shadow: var(--card-shadow);
-        }
-
-        @@keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Price Range Slider */
-        .noUi-connect {
-            background: linear-gradient(135deg, var(--primary-color), #2980b9);
-        }
-
-        .noUi-handle {
-            border-radius: 50%;
-            background: white;
-            box-shadow: var(--card-shadow);
-        }
-
-        /* Features Container */
-        .features-container {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 1rem;
-            border-radius: 8px;
-            background: #f8f9fa;
-        }
-
-        .features-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .features-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .features-container::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        /* Pagination */
-        .pagination {
-            margin-top: 2rem;
-        }
-
-        .page-link {
-            border: none;
-            color: var(--primary-color);
-            padding: 0.75rem 1rem;
-            margin: 0 0.25rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .page-link:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(135deg, var(--primary-color), #2980b9);
-            color: white;
-        }
-
-        /* Quick View Modal */
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-            box-shadow: var(--hover-shadow);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary-color), #2980b9);
-            color: white;
-            border: none;
-            border-radius: 15px 15px 0 0;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1.5rem;
-        }
-
-        /* Out of Stock Badge */
-        .out-of-stock-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--accent-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 600;
-            z-index: 1;
-        }
-
-        /* Loading Spinner */
-        .spinner-border {
-            color: var(--primary-color);
-        }
-
-        /* Responsive Design */
-        @@media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .card-header {
-                padding: 1rem;
-            }
-
-            .card-body {
-                padding: 1rem;
-            }
-
-            .btn {
-                padding: 0.5rem 1rem;
-            }
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .loading-overlay.show {
-            display: flex;
-        }
-
-        .loading-content {
-            text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .loading-content .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-
-        /* Algorithm Info Animation */
-        .sorting-info {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @@keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Product Card Animation */
-        .product-card {
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
-        }
-
-        /* Sorting Animation */
-        .sorting-in-progress .product-card {
-            transition: all 0.5s ease;
-            opacity: 0.7;
-            transform: scale(0.98);
-        }
-
-        .sorting-in-progress .product-card:hover {
-            transform: scale(1.02);
-            opacity: 1;
-            z-index: 1;
-        }
-
-        /* Sorting Visualization Styles */
-        .visualization-container {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.5rem;
-            min-height: 300px;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .algorithm-steps {
-            margin-bottom: 1rem;
-            font-family: monospace;
-            font-size: 0.9rem;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 1rem;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid #dee2e6;
-        }
-
-        .step-item {
-            padding: 0.75rem;
-            border-left: 3px solid var(--primary-color);
-            margin-bottom: 0.5rem;
-            background: white;
-            border-radius: 0 4px 4px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .comparison-chart {
-            height: 200px;
-            margin-top: 1rem;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid #dee2e6;
-        }
-
-        .algorithm-stats {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .stat-item:last-child {
-            border-bottom: none;
-        }
-
-        .stat-item label {
-            font-weight: 600;
-            color: #666;
-            margin: 0;
-        }
-
-        .stat-item .badge {
-            font-size: 0.9rem;
-            padding: 0.5rem 0.75rem;
-        }
-
-        .product-card.sorting-active {
-            animation: highlight 1s ease-in-out;
-            z-index: 1;
-        }
-
-        @@keyframes highlight {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); background: #fff3cd; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5); }
-            100% { transform: scale(1); }
-        }
-
-        /* Scrollbar styling */
-        .algorithm-steps::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .algorithm-steps::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .algorithm-steps::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        .algorithm-steps::-webkit-scrollbar-thumb:hover {
-            background: #2980b9;
-        }
-    </style>
+    <link href="~/css/site.css" rel="stylesheet" />
 }
 
 @section Scripts {
@@ -862,7 +402,7 @@
         // Handle form submission
         const filterForm = document.getElementById('filterForm');
         if (filterForm) {
-            filterForm.addEventListener('submit', function(e) {
+            filterForm.addEventListener('submit', function (e) {
                 e.preventDefault();
                 showLoading('Applying filters...');
                 this.submit();
@@ -872,14 +412,14 @@
         // Handle sort changes
         const sortControls = document.querySelectorAll('#sortBy, #sortDirection, #sortAlgorithm');
         sortControls.forEach(control => {
-            control.addEventListener('change', function() {
+            control.addEventListener('change', function () {
                 showLoading('Updating sort...');
             });
         });
 
         // Handle pagination
         document.querySelectorAll('.pagination .page-link').forEach(link => {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
                 showLoading('Loading page...');
                 const page = this.getAttribute('onclick').match(/\d+/)[0];
@@ -890,7 +430,7 @@
         // Handle reset filters
         const resetButton = document.getElementById('resetFilters');
         if (resetButton) {
-            resetButton.addEventListener('click', function() {
+            resetButton.addEventListener('click', function () {
                 showLoading('Resetting filters...');
             });
         }
@@ -898,7 +438,7 @@
         // Handle price range changes
         const priceSlider = document.getElementById('priceRangeSlider');
         if (priceSlider && priceSlider.noUiSlider) {
-            priceSlider.noUiSlider.on('change', function() {
+            priceSlider.noUiSlider.on('change', function () {
                 showLoading('Updating price range...');
             });
         }
@@ -906,7 +446,7 @@
         // Handle rating range changes
         const ratingRange = document.getElementById('ratingRange');
         if (ratingRange) {
-            ratingRange.addEventListener('change', function() {
+            ratingRange.addEventListener('change', function () {
                 showLoading('Updating rating filter...');
             });
         }
@@ -914,16 +454,14 @@
         // Handle feature checkbox changes
         const featureCheckboxes = document.querySelectorAll('.feature-checkbox');
         featureCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                showLoading('Updating features...');
+            checkbox.addEventListener('change', function () {
             });
         });
 
         // Handle in-stock checkbox changes
         const inStockCheckbox = document.getElementById('inStock');
         if (inStockCheckbox) {
-            inStockCheckbox.addEventListener('change', function() {
-                showLoading('Updating availability filter...');
+            inStockCheckbox.addEventListener('change', function () {
             });
         }
     </script>
@@ -933,7 +471,7 @@
 
     <script>
         // Initialize visualization panel
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const visualizationPanel = document.getElementById('sortingVisualization');
             const toggleButton = document.getElementById('toggleVisualization');
             const algorithmSteps = document.getElementById('algorithmSteps');
@@ -945,11 +483,11 @@
 
             // Toggle visualization panel
             if (toggleButton) {
-                toggleButton.addEventListener('click', function() {
+                toggleButton.addEventListener('click', function () {
                     isVisualizationVisible = !isVisualizationVisible;
                     visualizationPanel.style.display = isVisualizationVisible ? 'block' : 'none';
                     this.querySelector('i').className = isVisualizationVisible ? 'bi bi-eye-slash' : 'bi bi-eye';
-                    
+
                     if (isVisualizationVisible) {
                         const currentAlgorithm = document.getElementById('sortAlgorithm').value;
                         updateVisualization(currentAlgorithm);
@@ -960,7 +498,7 @@
             // Update visualization when sort algorithm changes
             const sortAlgorithmSelect = document.getElementById('sortAlgorithm');
             if (sortAlgorithmSelect) {
-                sortAlgorithmSelect.addEventListener('change', function() {
+                sortAlgorithmSelect.addEventListener('change', function () {
                     if (isVisualizationVisible) {
                         updateVisualization(this.value);
                     }
@@ -985,9 +523,9 @@
 
             // Get all product cards
             const productCards = Array.from(document.querySelectorAll('.product-card'));
-            
+
             // Simulate sorting steps based on algorithm
-            switch(algorithm) {
+            switch (algorithm) {
                 case 'quick':
                     simulateQuickSort(productCards, 0, productCards.length - 1);
                     break;
@@ -1054,7 +592,7 @@
 
                 for (let j = low; j < high; j++) {
                     comparisons++;
-                    if (parseFloat(cards[j].querySelector('.price').textContent.replace('$', '')) < 
+                    if (parseFloat(cards[j].querySelector('.price').textContent.replace('$', '')) <
                         parseFloat(pivot.querySelector('.price').textContent.replace('$', ''))) {
                         i++;
                         swaps++;
@@ -1077,7 +615,7 @@
             for (let i = 0; i < cards.length - 1; i++) {
                 for (let j = 0; j < cards.length - i - 1; j++) {
                     comparisons++;
-                    if (parseFloat(cards[j].querySelector('.price').textContent.replace('$', '')) > 
+                    if (parseFloat(cards[j].querySelector('.price').textContent.replace('$', '')) >
                         parseFloat(cards[j + 1].querySelector('.price').textContent.replace('$', ''))) {
                         swaps++;
                         highlightCards([cards[j], cards[j + 1]]);
@@ -1095,7 +633,7 @@
             const left = cards.slice(0, mid);
             const right = cards.slice(mid);
 
-            addStep(`Dividing array into two halves: [0-${mid-1}] and [${mid}-${cards.length-1}]`);
+            addStep(`Dividing array into two halves: [0-${mid - 1}] and [${mid}-${cards.length - 1}]`);
             highlightCards(left.concat(right));
 
             const sortedLeft = simulateMergeSort(left);
@@ -1121,8 +659,8 @@
                     j++;
                 }
                 swaps++;
-                highlightCards([left[i-1], right[j-1]]);
-                addStep(`Merging elements from left[${i-1}] and right[${j-1}]`);
+                highlightCards([left[i - 1], right[j - 1]]);
+                addStep(`Merging elements from left[${i - 1}] and right[${j - 1}]`);
             }
 
             return result.concat(left.slice(i)).concat(right.slice(j));
@@ -1223,7 +761,7 @@
 
         function simulateShellSort(cards) {
             const n = cards.length;
-            for (let gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
+            for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
                 addStep(`Using gap size: ${gap}`);
                 for (let i = gap; i < n; i++) {
                     const temp = cards[i];
