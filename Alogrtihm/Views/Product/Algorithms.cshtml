@@ -5,155 +5,504 @@
 <div class="container mt-4">
     <h1 class="mb-4">Sorting Algorithms</h1>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Algorithm Comparison</h5>
+    <!-- Algorithm Selection Buttons -->
+    <div class="algorithm-buttons mb-4">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary algorithm-btn active" data-algorithm="quick">
+                <i class="bi bi-lightning-fill me-2"></i>Quick Sort
+            </button>
+            <button type="button" class="btn btn-success algorithm-btn" data-algorithm="merge">
+                <i class="bi bi-arrow-down-up me-2"></i>Merge Sort
+            </button>
+            <button type="button" class="btn btn-info algorithm-btn" data-algorithm="heap">
+                <i class="bi bi-diagram-3 me-2"></i>Heap Sort
+            </button>
+            <button type="button" class="btn btn-warning algorithm-btn" data-algorithm="shell">
+                <i class="bi bi-layers me-2"></i>Shell Sort
+            </button>
+            <button type="button" class="btn btn-danger algorithm-btn" data-algorithm="insertion">
+                <i class="bi bi-arrow-right-circle me-2"></i>Insertion Sort
+            </button>
+            <button type="button" class="btn btn-secondary algorithm-btn" data-algorithm="selection">
+                <i class="bi bi-arrow-down-circle me-2"></i>Selection Sort
+            </button>
+            <button type="button" class="btn btn-dark algorithm-btn" data-algorithm="bubble">
+                <i class="bi bi-arrow-repeat me-2"></i>Bubble Sort
+            </button>
+        </div>
+    </div>
+
+    <!-- Algorithm Comparison Table -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-table me-2"></i>
+                Algorithm Comparison
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Time Complexity</th>
+                            <th>Space Complexity</th>
+                            <th>Best For</th>
+                            <th>Worst For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Quick Sort</strong>
+                                <div class="algorithm-complexity">O(n log n) average</div>
+                            </td>
+                            <td>O(n log n) average, O(n²) worst</td>
+                            <td>O(log n)</td>
+                            <td>Large datasets, general purpose</td>
+                            <td>Nearly sorted data</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Merge Sort</strong>
+                                <div class="algorithm-complexity">O(n log n)</div>
+                            </td>
+                            <td>O(n log n)</td>
+                            <td>O(n)</td>
+                            <td>Stable sorting, large datasets</td>
+                            <td>Small datasets (due to overhead)</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Heap Sort</strong>
+                                <div class="algorithm-complexity">O(n log n)</div>
+                            </td>
+                            <td>O(n log n)</td>
+                            <td>O(1)</td>
+                            <td>Memory-constrained systems</td>
+                            <td>Nearly sorted data</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Shell Sort</strong>
+                                <div class="algorithm-complexity">O(n log² n)</div>
+                            </td>
+                            <td>O(n log² n)</td>
+                            <td>O(1)</td>
+                            <td>Medium-sized datasets</td>
+                            <td>Very large datasets</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Insertion Sort</strong>
+                                <div class="algorithm-complexity">O(n²)</div>
+                            </td>
+                            <td>O(n²)</td>
+                            <td>O(1)</td>
+                            <td>Small datasets, nearly sorted data</td>
+                            <td>Large datasets</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Selection Sort</strong>
+                                <div class="algorithm-complexity">O(n²)</div>
+                            </td>
+                            <td>O(n²)</td>
+                            <td>O(1)</td>
+                            <td>Small datasets, minimal swaps</td>
+                            <td>Large datasets</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Bubble Sort</strong>
+                                <div class="algorithm-complexity">O(n²)</div>
+                            </td>
+                            <td>O(n²)</td>
+                            <td>O(1)</td>
+                            <td>Educational purposes, very small datasets</td>
+                            <td>Any practical use</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Algorithm Visualization Container -->
+    <div class="algorithm-container">
+        <!-- Quick Sort -->
+        <div class="algorithm-content active" id="quick-sort-content">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning-fill me-2"></i>
+                        Quick Sort Visualization
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Algorithm</th>
-                                    <th>Time Complexity</th>
-                                    <th>Space Complexity</th>
-                                    <th>Best For</th>
-                                    <th>Worst For</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>Quick Sort</strong>
-                                        <div class="algorithm-complexity">O(n log n) average</div>
-                                    </td>
-                                    <td>O(n log n) average, O(n²) worst</td>
-                                    <td>O(log n)</td>
-                                    <td>Large datasets, general purpose</td>
-                                    <td>Nearly sorted data</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Merge Sort</strong>
-                                        <div class="algorithm-complexity">O(n log n)</div>
-                                    </td>
-                                    <td>O(n log n)</td>
-                                    <td>O(n)</td>
-                                    <td>Stable sorting, large datasets</td>
-                                    <td>Small datasets (due to overhead)</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Heap Sort</strong>
-                                        <div class="algorithm-complexity">O(n log n)</div>
-                                    </td>
-                                    <td>O(n log n)</td>
-                                    <td>O(1)</td>
-                                    <td>Memory-constrained systems</td>
-                                    <td>Nearly sorted data</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Shell Sort</strong>
-                                        <div class="algorithm-complexity">O(n log² n)</div>
-                                    </td>
-                                    <td>O(n log² n)</td>
-                                    <td>O(1)</td>
-                                    <td>Medium-sized datasets</td>
-                                    <td>Very large datasets</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Insertion Sort</strong>
-                                        <div class="algorithm-complexity">O(n²)</div>
-                                    </td>
-                                    <td>O(n²)</td>
-                                    <td>O(1)</td>
-                                    <td>Small datasets, nearly sorted data</td>
-                                    <td>Large datasets</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Selection Sort</strong>
-                                        <div class="algorithm-complexity">O(n²)</div>
-                                    </td>
-                                    <td>O(n²)</td>
-                                    <td>O(1)</td>
-                                    <td>Small datasets, minimal swaps</td>
-                                    <td>Large datasets</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Bubble Sort</strong>
-                                        <div class="algorithm-complexity">O(n²)</div>
-                                    </td>
-                                    <td>O(n²)</td>
-                                    <td>O(1)</td>
-                                    <td>Educational purposes, very small datasets</td>
-                                    <td>Any practical use</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="quickSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-primary" onclick="startQuickSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetQuickSort()">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="quickSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="quickSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="quickSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="quickSortTime">0ms</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="quickSortSteps" class="steps-container"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">When to Use Each Algorithm</h5>
+        <!-- Merge Sort -->
+        <div class="algorithm-content" id="merge-sort-content">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-arrow-down-up me-2"></i>
+                        Merge Sort Visualization
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="mergeSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-success" onclick="startMergeSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetAlgorithm('merge')">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="mergeSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <h6>Quick Sort</h6>
-                                <p>Best for general-purpose sorting. Excellent average-case performance and works well with most data distributions.</p>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="mergeSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="mergeSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="mergeSortTime">0ms</span>
+                                </div>
                             </div>
-                            <div class="mb-4">
-                                <h6>Merge Sort</h6>
-                                <p>Ideal when you need a stable sort or when memory usage isn't a concern. Consistent performance regardless of data distribution.</p>
-                            </div>
-                            <div class="mb-4">
-                                <h6>Heap Sort</h6>
-                                <p>Great when memory usage is a concern. Provides consistent O(n log n) performance but is not stable.</p>
-                            </div>
-                            <div class="mb-4">
-                                <h6>Shell Sort</h6>
-                                <p>Good for medium-sized datasets. Combines the benefits of insertion sort with improved performance.</p>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="mergeSortSteps" class="steps-container"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Performance Tips</h5>
+            </div>
+        </div>
+
+        <!-- Heap Sort -->
+        <div class="algorithm-content" id="heap-sort-content">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-diagram-3 me-2"></i>
+                        Heap Sort Visualization
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="heapSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-info" onclick="startHeapSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetAlgorithm('heap')">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="heapSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li class="mb-3">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Use Quick Sort for most general-purpose sorting needs
-                                </li>
-                                <li class="mb-3">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Choose Merge Sort when stability is required
-                                </li>
-                                <li class="mb-3">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Use Heap Sort when memory is limited
-                                </li>
-                                <li class="mb-3">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Consider Insertion Sort for small datasets
-                                </li>
-                                <li class="mb-3">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Avoid Bubble Sort for practical applications
-                                </li>
-                            </ul>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="heapSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="heapSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="heapSortTime">0ms</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="heapSortSteps" class="steps-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shell Sort -->
+        <div class="algorithm-content" id="shell-sort-content">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-layers me-2"></i>
+                        Shell Sort Visualization
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="shellSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-warning" onclick="startShellSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetAlgorithm('shell')">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="shellSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="shellSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="shellSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="shellSortTime">0ms</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="shellSortSteps" class="steps-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insertion Sort -->
+        <div class="algorithm-content" id="insertion-sort-content">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-arrow-right-circle me-2"></i>
+                        Insertion Sort Visualization
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="insertionSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-danger" onclick="startInsertionSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetAlgorithm('insertion')">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="insertionSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="insertionSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="insertionSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="insertionSortTime">0ms</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="insertionSortSteps" class="steps-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selection Sort -->
+        <div class="algorithm-content" id="selection-sort-content">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-arrow-down-circle me-2"></i>
+                        Selection Sort Visualization
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="selectionSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-secondary" onclick="startSelectionSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetAlgorithm('selection')">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="selectionSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="selectionSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="selectionSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="selectionSortTime">0ms</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="selectionSortSteps" class="steps-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bubble Sort -->
+        <div class="algorithm-content" id="bubble-sort-content">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-arrow-repeat me-2"></i>
+                        Bubble Sort Visualization
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="visualization-area">
+                                <div class="array-container" id="bubbleSortArray"></div>
+                                <div class="controls mt-3">
+                                    <button class="btn btn-dark" onclick="startBubbleSort()">
+                                        <i class="bi bi-play-fill me-2"></i>Start Visualization
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetAlgorithm('bubble')">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                    </button>
+                                    <div class="speed-control mt-2">
+                                        <label>Speed:</label>
+                                        <input type="range" class="form-range" id="bubbleSortSpeed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="algorithm-stats">
+                                <h6>Statistics</h6>
+                                <div class="stat-item">
+                                    <span>Comparisons:</span>
+                                    <span id="bubbleSortComparisons">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Swaps:</span>
+                                    <span id="bubbleSortSwaps">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Time:</span>
+                                    <span id="bubbleSortTime">0ms</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps mt-3">
+                                <h6>Steps</h6>
+                                <div id="bubbleSortSteps" class="steps-container"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -163,29 +512,685 @@
 </div>
 
 @section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
     <style>
-        .algorithm-complexity {
+        .algorithm-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .algorithm-btn {
+            min-width: 150px;
+            margin: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .algorithm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .algorithm-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .algorithm-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .algorithm-content.active {
+            display: block;
+        }
+
+        .visualization-area {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 0.5rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            min-height: 200px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .array-element {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4a90e2;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .array-element::after {
+            content: attr(data-value);
+            position: absolute;
+            bottom: -20px;
             font-size: 0.8rem;
             color: #666;
-            margin-top: 0.25rem;
         }
 
-        .table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
+        .array-element.active {
+            background: #2ecc71;
+            transform: scale(1.1);
+            z-index: 2;
         }
 
-        .table td {
-            vertical-align: middle;
+        .array-element.pivot {
+            background: #e74c3c;
+            transform: scale(1.2);
+            z-index: 3;
         }
 
-        .list-unstyled li {
+        .array-element.comparing {
+            background: #f1c40f;
+            color: #000;
+        }
+
+        .array-element.sorted {
+            background: #95a5a6;
+        }
+
+        .array-element.merging {
+            background: #9b59b6;
+        }
+
+        .array-element.heap {
+            background: #e67e22;
+        }
+
+        .array-element.shell {
+            background: #1abc9c;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .algorithm-stats {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
             padding: 0.5rem 0;
             border-bottom: 1px solid #eee;
         }
 
-        .list-unstyled li:last-child {
+        .stat-item:last-child {
             border-bottom: none;
         }
+
+        .steps-container {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step-item {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @@keyframes swap {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+            100% { transform: translateX(0); }
+        }
+
+       @@keyframes compare {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/csharp.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize syntax highlighting
+            hljs.highlightAll();
+
+            // Initialize algorithm buttons
+            initializeAlgorithmButtons();
+            
+            // Initialize arrays
+            initializeArrays();
+        });
+
+        function initializeAlgorithmButtons() {
+            const buttons = document.querySelectorAll('.algorithm-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons and contents
+                    document.querySelectorAll('.algorithm-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.algorithm-content').forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const algorithm = this.dataset.algorithm;
+                    document.getElementById(`${algorithm}-sort-content`).classList.add('active');
+                });
+            });
+        }
+
+        function initializeArrays() {
+            const algorithms = ['quick', 'merge', 'heap', 'shell', 'insertion', 'selection', 'bubble'];
+            algorithms.forEach(algorithm => {
+                const container = document.getElementById(`${algorithm}SortArray`);
+                if (container) {
+                    // Generate random numbers
+                    const numbers = Array.from({length: 8}, () => Math.floor(Math.random() * 100));
+                    
+                    // Create array elements
+                    numbers.forEach(num => {
+                        const element = document.createElement('div');
+                        element.className = 'array-element';
+                        element.textContent = num;
+                        element.dataset.value = num;
+                        container.appendChild(element);
+                    });
+                }
+            });
+        }
+
+        function startQuickSort() {
+            const elements = Array.from(document.querySelectorAll('#quickSortArray .array-element'));
+            const speed = document.getElementById('quickSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function quickSort(arr, low, high) {
+                if (low < high) {
+                    const pivotIndex = await partition(arr, low, high);
+                    await quickSort(arr, low, pivotIndex - 1);
+                    await quickSort(arr, pivotIndex + 1, high);
+                }
+            }
+
+            async function partition(arr, low, high) {
+                const pivot = arr[high];
+                pivot.classList.add('pivot');
+                
+                let i = low - 1;
+                
+                for (let j = low; j < high; j++) {
+                    comparisons++;
+                    document.getElementById('quickSortComparisons').textContent = comparisons;
+                    
+                    arr[j].classList.add('comparing');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    
+                    if (parseInt(arr[j].textContent) < parseInt(pivot.textContent)) {
+                        i++;
+                        if (i !== j) {
+                            swaps++;
+                            document.getElementById('quickSortSwaps').textContent = swaps;
+                            
+                            // Swap elements
+                            const temp = arr[i].textContent;
+                            arr[i].textContent = arr[j].textContent;
+                            arr[j].textContent = temp;
+                            
+                            arr[i].classList.add('swapping');
+                            arr[j].classList.add('swapping');
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            arr[i].classList.remove('swapping');
+                            arr[j].classList.remove('swapping');
+                        }
+                    }
+                    arr[j].classList.remove('comparing');
+                }
+                
+                // Swap pivot
+                swaps++;
+                document.getElementById('quickSortSwaps').textContent = swaps;
+                
+                const temp = arr[i + 1].textContent;
+                arr[i + 1].textContent = pivot.textContent;
+                arr[high].textContent = temp;
+                
+                pivot.classList.remove('pivot');
+                return i + 1;
+            }
+
+            quickSort(elements, 0, elements.length - 1).then(() => {
+                const endTime = performance.now();
+                document.getElementById('quickSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+                
+                // Mark all elements as sorted
+                elements.forEach(el => el.classList.add('sorted'));
+            });
+        }
+
+        function resetQuickSort() {
+            const container = document.getElementById('quickSortArray');
+            container.innerHTML = '';
+            initializeArrays();
+            
+            // Reset statistics
+            document.getElementById('quickSortComparisons').textContent = '0';
+            document.getElementById('quickSortSwaps').textContent = '0';
+            document.getElementById('quickSortTime').textContent = '0ms';
+        }
+
+        function startMergeSort() {
+            const elements = Array.from(document.querySelectorAll('#mergeSortArray .array-element'));
+            const speed = document.getElementById('mergeSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function mergeSort(arr, left, right) {
+                if (left < right) {
+                    const mid = Math.floor((left + right) / 2);
+                    await mergeSort(arr, left, mid);
+                    await mergeSort(arr, mid + 1, right);
+                    await merge(arr, left, mid, right);
+                }
+            }
+
+            async function merge(arr, left, mid, right) {
+                const leftArr = arr.slice(left, mid + 1);
+                const rightArr = arr.slice(mid + 1, right + 1);
+                let i = 0, j = 0, k = left;
+
+                while (i < leftArr.length && j < rightArr.length) {
+                    comparisons++;
+                    document.getElementById('mergeSortComparisons').textContent = comparisons;
+                    
+                    leftArr[i].classList.add('comparing');
+                    rightArr[j].classList.add('comparing');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+
+                    if (parseInt(leftArr[i].textContent) <= parseInt(rightArr[j].textContent)) {
+                        arr[k].textContent = leftArr[i].textContent;
+                        arr[k].classList.add('merging');
+                        i++;
+                    } else {
+                        arr[k].textContent = rightArr[j].textContent;
+                        arr[k].classList.add('merging');
+                        j++;
+                    }
+                    swaps++;
+                    document.getElementById('mergeSortSwaps').textContent = swaps;
+                    k++;
+
+                    leftArr[i-1]?.classList.remove('comparing');
+                    rightArr[j-1]?.classList.remove('comparing');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+
+                while (i < leftArr.length) {
+                    arr[k].textContent = leftArr[i].textContent;
+                    arr[k].classList.add('merging');
+                    i++;
+                    k++;
+                    swaps++;
+                    document.getElementById('mergeSortSwaps').textContent = swaps;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+
+                while (j < rightArr.length) {
+                    arr[k].textContent = rightArr[j].textContent;
+                    arr[k].classList.add('merging');
+                    j++;
+                    k++;
+                    swaps++;
+                    document.getElementById('mergeSortSwaps').textContent = swaps;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+
+            mergeSort(elements, 0, elements.length - 1).then(() => {
+                const endTime = performance.now();
+                document.getElementById('mergeSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+                elements.forEach(el => el.classList.add('sorted'));
+            });
+        }
+
+        function startHeapSort() {
+            const elements = Array.from(document.querySelectorAll('#heapSortArray .array-element'));
+            const speed = document.getElementById('heapSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function heapSort(arr) {
+                const n = arr.length;
+
+                for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                    await heapify(arr, n, i);
+                }
+
+                for (let i = n - 1; i > 0; i--) {
+                    arr[0].classList.add('active');
+                    arr[i].classList.add('active');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+
+                    const temp = arr[0].textContent;
+                    arr[0].textContent = arr[i].textContent;
+                    arr[i].textContent = temp;
+                    swaps++;
+                    document.getElementById('heapSortSwaps').textContent = swaps;
+
+                    arr[0].classList.remove('active');
+                    arr[i].classList.remove('active');
+                    arr[i].classList.add('sorted');
+
+                    await heapify(arr, i, 0);
+                }
+            }
+
+            async function heapify(arr, n, i) {
+                let largest = i;
+                const left = 2 * i + 1;
+                const right = 2 * i + 2;
+
+                if (left < n) {
+                    comparisons++;
+                    document.getElementById('heapSortComparisons').textContent = comparisons;
+                    arr[left].classList.add('comparing');
+                    arr[largest].classList.add('comparing');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+
+                    if (parseInt(arr[left].textContent) > parseInt(arr[largest].textContent)) {
+                        largest = left;
+                    }
+                    arr[left].classList.remove('comparing');
+                    arr[largest].classList.remove('comparing');
+                }
+
+                if (right < n) {
+                    comparisons++;
+                    document.getElementById('heapSortComparisons').textContent = comparisons;
+                    arr[right].classList.add('comparing');
+                    arr[largest].classList.add('comparing');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+
+                    if (parseInt(arr[right].textContent) > parseInt(arr[largest].textContent)) {
+                        largest = right;
+                    }
+                    arr[right].classList.remove('comparing');
+                    arr[largest].classList.remove('comparing');
+                }
+
+                if (largest !== i) {
+                    arr[i].classList.add('heap');
+                    arr[largest].classList.add('heap');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+
+                    const temp = arr[i].textContent;
+                    arr[i].textContent = arr[largest].textContent;
+                    arr[largest].textContent = temp;
+                    swaps++;
+                    document.getElementById('heapSortSwaps').textContent = swaps;
+
+                    arr[i].classList.remove('heap');
+                    arr[largest].classList.remove('heap');
+
+                    await heapify(arr, n, largest);
+                }
+            }
+
+            heapSort(elements).then(() => {
+                const endTime = performance.now();
+                document.getElementById('heapSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+                elements.forEach(el => el.classList.add('sorted'));
+            });
+        }
+
+        function startShellSort() {
+            const elements = Array.from(document.querySelectorAll('#shellSortArray .array-element'));
+            const speed = document.getElementById('shellSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function shellSort(arr) {
+                const n = arr.length;
+                for (let gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
+                    for (let i = gap; i < n; i++) {
+                        const temp = arr[i].textContent;
+                        let j;
+                        
+                        arr[i].classList.add('shell');
+                        await new Promise(resolve => setTimeout(resolve, delay));
+
+                        for (j = i; j >= gap; j -= gap) {
+                            comparisons++;
+                            document.getElementById('shellSortComparisons').textContent = comparisons;
+                            
+                            arr[j - gap].classList.add('comparing');
+                            await new Promise(resolve => setTimeout(resolve, delay));
+
+                            if (parseInt(arr[j - gap].textContent) > parseInt(temp)) {
+                                arr[j].textContent = arr[j - gap].textContent;
+                                swaps++;
+                                document.getElementById('shellSortSwaps').textContent = swaps;
+                            } else {
+                                break;
+                            }
+                            arr[j - gap].classList.remove('comparing');
+                        }
+                        arr[j].textContent = temp;
+                        arr[i].classList.remove('shell');
+                    }
+                }
+            }
+
+            shellSort(elements).then(() => {
+                const endTime = performance.now();
+                document.getElementById('shellSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+                elements.forEach(el => el.classList.add('sorted'));
+            });
+        }
+
+        function startInsertionSort() {
+            const elements = Array.from(document.querySelectorAll('#insertionSortArray .array-element'));
+            const speed = document.getElementById('insertionSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function insertionSort(arr) {
+                for (let i = 1; i < arr.length; i++) {
+                    const key = arr[i].textContent;
+                    let j = i - 1;
+
+                    arr[i].classList.add('active');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+
+                    while (j >= 0) {
+                        comparisons++;
+                        document.getElementById('insertionSortComparisons').textContent = comparisons;
+                        
+                        arr[j].classList.add('comparing');
+                        await new Promise(resolve => setTimeout(resolve, delay));
+
+                        if (parseInt(arr[j].textContent) > parseInt(key)) {
+                            arr[j + 1].textContent = arr[j].textContent;
+                            swaps++;
+                            document.getElementById('insertionSortSwaps').textContent = swaps;
+                            j--;
+                        } else {
+                            break;
+                        }
+                        arr[j + 1].classList.remove('comparing');
+                    }
+                    arr[j + 1].textContent = key;
+                    arr[i].classList.remove('active');
+                }
+            }
+
+            insertionSort(elements).then(() => {
+                const endTime = performance.now();
+                document.getElementById('insertionSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+                elements.forEach(el => el.classList.add('sorted'));
+            });
+        }
+
+        function startSelectionSort() {
+            const elements = Array.from(document.querySelectorAll('#selectionSortArray .array-element'));
+            const speed = document.getElementById('selectionSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function selectionSort(arr) {
+                for (let i = 0; i < arr.length - 1; i++) {
+                    let minIdx = i;
+                    arr[i].classList.add('active');
+                    
+                    for (let j = i + 1; j < arr.length; j++) {
+                        comparisons++;
+                        document.getElementById('selectionSortComparisons').textContent = comparisons;
+                        
+                        arr[j].classList.add('comparing');
+                        await new Promise(resolve => setTimeout(resolve, delay));
+
+                        if (parseInt(arr[j].textContent) < parseInt(arr[minIdx].textContent)) {
+                            arr[minIdx].classList.remove('active');
+                            minIdx = j;
+                            arr[minIdx].classList.add('active');
+                        }
+                        arr[j].classList.remove('comparing');
+                    }
+
+                    if (minIdx !== i) {
+                        const temp = arr[i].textContent;
+                        arr[i].textContent = arr[minIdx].textContent;
+                        arr[minIdx].textContent = temp;
+                        swaps++;
+                        document.getElementById('selectionSortSwaps').textContent = swaps;
+                    }
+                    arr[i].classList.remove('active');
+                    arr[i].classList.add('sorted');
+                }
+                arr[arr.length - 1].classList.add('sorted');
+            }
+
+            selectionSort(elements).then(() => {
+                const endTime = performance.now();
+                document.getElementById('selectionSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+            });
+        }
+
+        function startBubbleSort() {
+            const elements = Array.from(document.querySelectorAll('#bubbleSortArray .array-element'));
+            const speed = document.getElementById('bubbleSortSpeed').value;
+            const delay = 1000 / speed;
+            
+            let comparisons = 0;
+            let swaps = 0;
+            const startTime = performance.now();
+
+            async function bubbleSort(arr) {
+                const n = arr.length;
+                for (let i = 0; i < n - 1; i++) {
+                    for (let j = 0; j < n - i - 1; j++) {
+                        comparisons++;
+                        document.getElementById('bubbleSortComparisons').textContent = comparisons;
+                        
+                        arr[j].classList.add('comparing');
+                        arr[j + 1].classList.add('comparing');
+                        await new Promise(resolve => setTimeout(resolve, delay));
+
+                        if (parseInt(arr[j].textContent) > parseInt(arr[j + 1].textContent)) {
+                            const temp = arr[j].textContent;
+                            arr[j].textContent = arr[j + 1].textContent;
+                            arr[j + 1].textContent = temp;
+                            swaps++;
+                            document.getElementById('bubbleSortSwaps').textContent = swaps;
+                        }
+                        arr[j].classList.remove('comparing');
+                        arr[j + 1].classList.remove('comparing');
+                    }
+                    arr[n - i - 1].classList.add('sorted');
+                }
+                arr[0].classList.add('sorted');
+            }
+
+            bubbleSort(elements).then(() => {
+                const endTime = performance.now();
+                document.getElementById('bubbleSortTime').textContent = `${Math.round(endTime - startTime)}ms`;
+            });
+        }
+
+        // Reset functions for all algorithms
+        function resetAlgorithm(algorithm) {
+            const container = document.getElementById(`${algorithm}SortArray`);
+            container.innerHTML = '';
+            initializeArrays();
+            
+            document.getElementById(`${algorithm}SortComparisons`).textContent = '0';
+            document.getElementById(`${algorithm}SortSwaps`).textContent = '0';
+            document.getElementById(`${algorithm}SortTime`).textContent = '0ms';
+        }
+    </script>
 } 
